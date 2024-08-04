@@ -55,15 +55,17 @@ plotcurves <- function(curves, index = 1, color = c(), xlim = c(), remove_legend
   ))
   plot_data <- cbind.data.frame(plot_times,plot_probs)
   plot_data <- reshape2::melt(plot_data,measure.vars = names(plot_data)[-1], variable.name = "Index")
-  pl <- ggplot2::ggplot(data = plot_data, ggplot2::aes(x = plot_times,y = plot_data$value, colour = plot_data$Index))+
+  pl <- ggplot2::ggplot(data = plot_data, ggplot2::aes_string(x = "plot_times",y = "value", colour = "Index"))+
     ggplot2::geom_line(size = 1.5)
   if(colorOK)
     pl <- pl + ggplot2::scale_color_manual(values = color)
   if(length(xlim)==2){
-    pl <- pl+ ggplot2::xlim(c(xlim[1],xlim[2]))
+    pl <- pl+ ggplot2::coord_cartesian(xlim =c(xlim[1],xlim[2]), ylim= c(0,1))
+  } else {
+    pl <- pl + ggplot2::coord_cartesian(ylim= c(0,1))
   }
   pl <- pl +
-    ggplot2::scale_y_continuous( limits= c(0,1),breaks = c(0,.1,.2,.3,.4,.5,.6,.7,.8,.9,1))+
+    ggplot2::scale_y_continuous(breaks = c(0,.1,.2,.3,.4,.5,.6,.7,.8,.9,1))+
     ggplot2::theme_bw() +
     ggplot2::theme(
           text = ggplot2::element_text(size=18, face=  "bold"),
